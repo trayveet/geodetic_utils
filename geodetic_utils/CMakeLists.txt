@@ -9,11 +9,19 @@ catkin_simple(ALL_DEPS_REQUIRED)
 find_package(Eigen REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 
+cs_add_library(visualization_lib src/visualization.cc)
+#target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} )
+
+INCLUDE_DIRECTORIES(~/catkin_ws/src/amrl_msgs/msg_gen/cpp/include)
+
 cs_add_executable(set_gps_reference_node src/set_gps_reference_node.cpp)
 target_link_libraries(set_gps_reference_node  ${catkin_LIBRARIES})
 
 cs_add_executable(gps_to_pose_conversion_node src/gps_to_pose_conversion_node.cpp)
 #target_link_libraries(gps_to_pose_conversion_node  ${catkin_LIBRARIES})
+
+cs_add_executable(gps_to_amrl_localization_node src/gps_to_amrl_localization_node.cpp)
+target_link_libraries(gps_to_amrl_localization_node  visualization_lib)
 
 cs_install()
 cs_install_scripts(src/euler_radians_to_degrees.py)
