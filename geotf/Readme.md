@@ -1,5 +1,3 @@
-Added support to amrl localization and visualization messages.
-
 
 New library for geodetic data. I name it geotf.
 For reference: From now on, geoframes are coordinate frames handled by geotf. TF frames are handled by regular tf.
