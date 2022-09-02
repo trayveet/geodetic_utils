@@ -74,24 +74,36 @@ void gps_callback(const sensor_msgs::NavSatFixConstPtr& msg)
 
   //prepare nav trace messages
   static vector<Vector2f> trace;
+  static std::vector< uint32_t > color;
   static Vector2f lastLoc;
   static bool initialized = false;
+  
   const Vector2f curLoc(x, y);
   if (!initialized) {
     trace.push_back(curLoc);
+    if (msg->position_covariance[0] < 0.15) color.push_back(0xFF00FF00); //green
+    else if (msg->position_covariance[0] < 1.0) color.push_back(0xFFED7014); //orange
+    else if (msg->position_covariance[0] < 2.0) color.push_back(0xFF893101); //amber
+    else color.push_back(0xFFFF0000); //red
     lastLoc = curLoc;
     initialized = true;
     return;
   }
   if((curLoc-lastLoc).squaredNorm()>0.2236068){
     trace.push_back(curLoc);
+    if (msg->position_covariance[0] < 0.15) color.push_back(0xFF00FF00); //green
+    else if (msg->position_covariance[0] < 1.0) color.push_back(0xFFED7014); //orange
+    else if (msg->position_covariance[0] < 2.0) color.push_back(0xFF893101); //amber
+    else color.push_back(0xFFFF0000); //red
     lastLoc = curLoc;
   }
+
 
   for(unsigned int i = 0; i + 1 < trace.size(); i++){
     //if((trace[i]-trace[i+1]).squaredNorm()>2.236068)
     //  continue;
-    visualization::DrawLine(trace[i], trace[i + 1], 0xFFc0c0c0, visualization_msg_);
+    //
+    visualization::DrawLine(trace[i], trace[i + 1], color[i+1], visualization_msg_);
   }
 
   g_gps_amrl_visualization_pub.publish(visualization_msg_);
